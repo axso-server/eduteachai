@@ -91,7 +91,8 @@ app.get('*', (req, res) => {
 
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
-mongoose.connect(process.env.MONGODB_URI)
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URL || process.env.MONGO_PUBLIC_URL;
+mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB ulandi');
     app.listen(PORT, () => {
