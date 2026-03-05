@@ -10,10 +10,7 @@ app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Frontend papkasini to'g'ri yo'l bilan topish
-const frontendPath = path.join(__dirname, '..', 'frontend');
-app.use(express.static(frontendPath));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
@@ -62,20 +59,8 @@ app.post('/api/seed', async (req, res) => {
   }
 });
 
-// Frontend uchun barcha yo'llar
 app.get('*', (req, res) => {
-  const indexPath = path.join(__dirname, '..', 'frontend', 'index.html');
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      res.status(200).send(`
-        <!DOCTYPE html><html><head><title>EduTeachAI</title></head>
-        <body><h2>Server ishlayapti!</h2>
-        <p>Frontend yo'li: ${indexPath}</p>
-        <p><a href="/api/health">API tekshirish</a></p>
-        </body></html>
-      `);
-    }
-  });
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 8080;
@@ -86,7 +71,6 @@ mongoose.connect(MONGO_URI)
     console.log('✅ MongoDB ulandi');
     app.listen(PORT, () => {
       console.log('🚀 EduTeachAI Server: http://localhost:' + PORT);
-      console.log('📁 Frontend path: ' + frontendPath);
     });
   })
   .catch(err => {
